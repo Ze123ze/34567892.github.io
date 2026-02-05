@@ -19,6 +19,7 @@ class ExtractedEntity(BaseModel):
     id: str
     name: str
     entity_type: str
+    ontology_class: str = ""
     level: EntityLevel
     confidence: float = 0.0
     evidence: List[str] = Field(default_factory=list)

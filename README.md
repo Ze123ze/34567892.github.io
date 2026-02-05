@@ -15,7 +15,7 @@
 
 - 支持 OpenAI 兼容的大模型 API（可替换为任意兼容 endpoint）
 - 4 组智能体协作：Global / Structure / Semantic / Relation
-- 分层输出、统一标准化、可追溯 evidence
+- 对齐本体中的核心类、数据属性、对象属性约束
 - FastAPI 服务化部署，提供 HTTP 接口
 
 ## 3. 快速开始
@@ -65,18 +65,19 @@ curl -X POST http://localhost:8000/v1/pipeline/extract \
 policy_kg_pipeline/
   api_server.py       # FastAPI 入口
   agents.py           # 各层智能体定义
-  config.py           # 实体类型与层级配置
+  config.py           # 本体类、实体类型、关系约束配置
   llm_client.py       # OpenAI 兼容 API 客户端
   models.py           # 数据模型
   pipeline.py         # 流水线编排
   main.py             # CLI 入口
 ```
 
-## 5. 后续你需要补充的内容
+## 5. 本体对齐说明
 
-你提到“实体英文名与关系类型后续提供”，本项目已预留：
+当前代码已对齐你定义的核心本体结构：
 
-- `config.py > ENTITY_TYPES`：补充 `english_name`
-- `config.py > RELATION_TYPES`：补充关系标签、头尾实体约束
-- `agents.py` 中的 prompts：可按领域术语进一步强化
+- 13 个核心类：Policy、Provision、PolicyTool、EligibilityCondition、PolicyTarget、Project、PolicyBackground、PolicyInitiative、PolicyObjective、DomainTheme、Organization、Jurisdiction、TimePeriod。
+- Provision 作为独立类，不再是 Policy 的普通属性。
+- 抽取时 `attributes` 字段承载对应类的数据属性（例如 Policy 的 `policyId/documentNumber/effectiveDate` 等）。
+- 关系抽取使用标准对象属性（例如 `hasProvision`、`supportsProject`、`sourceProvision`、`hasJurisdictionOver` 等）并做方向性约束校验。
 
